@@ -279,7 +279,7 @@ const Login = () => {
           New to Cantina?{" "}
           <Link
             to="/signup"
-            className="text-amber-400 hover:text-amber-300 font-medium hover:underline"
+            className="text-amber-400 hover:text-amber-300 font-medium ho"
           >
             Create an account
           </Link>
