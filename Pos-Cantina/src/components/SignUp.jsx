@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { MdLock, MdEmail, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import api from "../services/api";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -14,6 +15,21 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
+  useEffect(() => {
+    const videoElement = document.querySelector("video");
+    if (videoElement) {
+      videoElement.addEventListener("loadeddata", () => {
+        setVideoLoaded(true);
+      });
+
+      videoElement.addEventListener("error", (e) => {
+        console.error("Video error:", e);
+        setVideoLoaded(false);
+      });
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,143 +71,238 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 space-y-6">
-        <div className="text-center">
-          <h2 className="text-4xl font-bold text-gray-900 mb-2">
-            Create Account
-          </h2>
-          <p className="text-gray-600">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-indigo-600 hover:text-indigo-500 font-semibold transition-colors"
-            >
-              Sign in
-            </Link>
-          </p>
-        </div>
+    <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-slate-900">
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800" />
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
-              <p className="text-red-700 text-sm font-medium">{error}</p>
-            </div>
-          )}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${
+            videoLoaded ? "opacity-60" : "opacity-0"
+          }`}
+          poster="/bar-poster.png"
+        >
+          <source src="/bar-ambience.mp4" type="video/mp4" />
+        </video>
 
-          <div className="space-y-4">
-            <div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <MdEmail className="h-5 w-5 text-indigo-500" />
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors"
-                  placeholder="Email address"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  disabled={loading}
-                />
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-20 w-full max-w-[900px] mx-auto px-6 h-full max-h-screen py-4 flex flex-col justify-center"
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+          className="bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 overflow-hidden"
+        >
+          <div className="flex flex-row">
+            <div className="hidden lg:flex w-1/3 bg-gradient-to-b from-amber-500/20 to-amber-700/20 backdrop-blur-sm">
+              <div className="flex flex-col items-center justify-center w-full p-8 text-center">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.5 }}
+                  className="space-y-6"
+                >
+                  <h3 className="text-3xl font-bold text-white">
+                    Welcome Back!
+                  </h3>
+                  <p className="text-gray-200 text-lg max-w-[280px] mx-auto">
+                    Already have an account? Sign in to continue your journey
+                  </p>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Link
+                      to="/login"
+                      className="inline-block px-8 py-3 rounded-xl border-2 border-white/20 
+                               text-white font-medium hover:bg-white/10 transition-colors
+                               backdrop-blur-sm"
+                    >
+                      Sign In
+                    </Link>
+                  </motion.div>
+                </motion.div>
               </div>
             </div>
 
-            <div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <MdLock className="h-5 w-5 text-indigo-500" />
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  required
-                  className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors"
-                  placeholder="Password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
+            <div className="flex-1 lg:max-w-[600px]">
+              <div className="px-7 pt-6 pb-4">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
                 >
-                  {showPassword ? (
-                    <MdVisibilityOff className="h-5 w-5 text-gray-400 hover:text-indigo-500" />
-                  ) : (
-                    <MdVisibility className="h-5 w-5 text-gray-400 hover:text-indigo-500" />
-                  )}
-                </button>
+                  <h2 className="text-2xl font-medium text-white mb-1">
+                    Create Account
+                  </h2>
+                  <p className="text-gray-300 text-sm">
+                    Join us and start your journey
+                  </p>
+                </motion.div>
               </div>
-            </div>
 
-            <div>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <MdLock className="h-5 w-5 text-indigo-500" />
-                </div>
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  required
-                  className="w-full pl-11 pr-12 py-3 rounded-xl border border-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 transition-colors"
-                  placeholder="Confirm Password"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <MdVisibilityOff className="h-5 w-5 text-gray-400 hover:text-indigo-500" />
-                  ) : (
-                    <MdVisibility className="h-5 w-5 text-gray-400 hover:text-indigo-500" />
-                  )}
-                </button>
+              <div className="bg-white/10 px-7 pb-7 pt-5">
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <AnimatePresence>
+                    {error && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="bg-red-500/20 border border-red-500/50 px-4 py-3 rounded-xl"
+                      >
+                        <p className="text-red-200 text-sm">{error}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
+                      Email
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
+                        <MdEmail className="h-5 w-5 text-amber-300" />
+                      </div>
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        className="w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl 
+                                 text-white placeholder-gray-400 
+                                 focus:bg-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20
+                                 transition-all duration-200"
+                        placeholder="your@email.com"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
+                      Password
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
+                        <MdLock className="h-5 w-5 text-amber-300" />
+                      </div>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        required
+                        className="w-full pl-11 pr-12 py-3.5 bg-white/10 border border-white/20 rounded-xl 
+                                 text-white placeholder-gray-400 
+                                 focus:bg-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20
+                                 transition-all duration-200"
+                        placeholder="••••••••"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        disabled={loading}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-4 flex items-center"
+                      >
+                        {showPassword ? (
+                          <MdVisibilityOff className="h-5 w-5 text-gray-400 hover:text-amber-300" />
+                        ) : (
+                          <MdVisibility className="h-5 w-5 text-gray-400 hover:text-amber-300" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
+                      Confirm Password
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
+                        <MdLock className="h-5 w-5 text-amber-300" />
+                      </div>
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        name="confirmPassword"
+                        required
+                        className="w-full pl-11 pr-12 py-3.5 bg-white/10 border border-white/20 rounded-xl 
+                                 text-white placeholder-gray-400 
+                                 focus:bg-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20
+                                 transition-all duration-200"
+                        placeholder="••••••••"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
+
+                  <motion.button
+                    type="submit"
+                    disabled={loading}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white 
+                             font-medium py-3.5 rounded-xl hover:from-amber-600 hover:to-amber-700
+                             transition-all duration-200 shadow-lg shadow-amber-500/25
+                             disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? (
+                      <span className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-2"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          />
+                        </svg>
+                        Creating account...
+                      </span>
+                    ) : (
+                      "Sign up"
+                    )}
+                  </motion.button>
+
+                  <div className="text-center pt-2 lg:hidden">
+                    <p className="text-sm text-gray-300">
+                      Already have an account?{" "}
+                      <Link
+                        to="/login"
+                        className="text-amber-400 hover:text-amber-300 font-medium hover:underline"
+                      >
+                        Sign in
+                      </Link>
+                    </p>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Creating account...
-              </span>
-            ) : (
-              "Create Account"
-            )}
-          </button>
-        </form>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 };
