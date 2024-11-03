@@ -14,6 +14,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   // Check if user is already logged in
   useEffect(() => {
@@ -41,6 +42,19 @@ const Login = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Get user data from localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUserData(parsedUser);
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+      }
+    }
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -54,25 +68,16 @@ const Login = () => {
         localStorage.setItem(
           "user",
           JSON.stringify({
-            id: response.data._id,
+            name: response.data.name,
             email: response.data.email,
+            _id: response.data._id,
           })
         );
         localStorage.setItem("isAuthenticated", "true");
-
-        try {
-          await api.get("/auth/verify");
-          navigate("/");
-        } catch (verifyError) {
-          throw new Error("Token verification failed");
-        }
+        navigate("/dashboard");
       }
     } catch (err) {
-      setError(
-        err.response?.data?.error ||
-          err.message ||
-          "An error occurred during login"
-      );
+      setError(err.response?.data?.error || "An error occurred during login.");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("isAuthenticated");

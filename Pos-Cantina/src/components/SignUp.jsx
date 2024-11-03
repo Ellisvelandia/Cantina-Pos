@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const SignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -44,12 +45,12 @@ const SignUp = () => {
 
     try {
       const response = await api.post("/auth/register", {
+        name: formData.name,
         email: formData.email,
         password: formData.password,
       });
 
       if (response.data) {
-        // Don't store auth data after registration
         navigate("/login");
       }
     } catch (err) {
@@ -71,7 +72,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-slate-900">
+    <div className="fixed inset-0 flex items-center justify-center overflow-auto bg-slate-900">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800" />
 
@@ -95,15 +96,29 @@ const SignUp = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative z-20 w-full max-w-[900px] mx-auto px-6 h-full max-h-screen py-4 flex flex-col justify-center"
+        className="relative z-20 w-full max-w-[900px] mx-auto px-6 min-h-screen py-8 flex items-center"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.3 }}
-          className="bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 overflow-hidden"
+          className="bg-white/10 backdrop-blur-md rounded-3xl shadow-2xl border border-white/20 w-full 
+                     overflow-hidden my-auto"
         >
-          <div className="flex flex-row">
+          <div
+            className="flex flex-row max-h-[90vh] overflow-auto
+                        [&::-webkit-scrollbar]:w-2
+                        [&::-webkit-scrollbar-track]:bg-black/10
+                        [&::-webkit-scrollbar-thumb]:bg-amber-500/50
+                        [&::-webkit-scrollbar-thumb]:rounded-full
+                        [&::-webkit-scrollbar-thumb]:border-2
+                        [&::-webkit-scrollbar-thumb]:border-transparent
+                        [&::-webkit-scrollbar-thumb]:bg-clip-padding
+                        [&::-webkit-scrollbar-thumb]:hover:bg-amber-500/70
+                        scrollbar-thin
+                        scrollbar-track-black/10
+                        scrollbar-thumb-amber-500/50"
+          >
             <div className="hidden lg:flex w-1/3 bg-gradient-to-b from-amber-500/20 to-amber-700/20 backdrop-blur-sm">
               <div className="flex flex-col items-center justify-center w-full p-8 text-center">
                 <motion.div
@@ -113,7 +128,7 @@ const SignUp = () => {
                   className="space-y-6"
                 >
                   <h3 className="text-3xl font-bold text-white">
-                    Welcome Back!
+                    Manage your canteen!
                   </h3>
                   <p className="text-gray-200 text-lg max-w-[280px] mx-auto">
                     Already have an account? Sign in to continue your journey
@@ -135,22 +150,20 @@ const SignUp = () => {
               </div>
             </div>
 
-            <div className="flex-1 lg:max-w-[600px]">
-              <div className="px-7 pt-6 pb-4">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <h2 className="text-2xl font-medium text-white mb-1">
-                    Create Account
-                  </h2>
-                  <p className="text-gray-300 text-sm">
-                    Join us and start your journey
-                  </p>
-                </motion.div>
-              </div>
-
+            <div
+              className="flex-1 lg:max-w-[600px] overflow-y-auto
+                          [&::-webkit-scrollbar]:w-2
+                          [&::-webkit-scrollbar-track]:bg-black/10
+                          [&::-webkit-scrollbar-thumb]:bg-amber-500/50
+                          [&::-webkit-scrollbar-thumb]:rounded-full
+                          [&::-webkit-scrollbar-thumb]:border-2
+                          [&::-webkit-scrollbar-thumb]:border-transparent
+                          [&::-webkit-scrollbar-thumb]:bg-clip-padding
+                          [&::-webkit-scrollbar-thumb]:hover:bg-amber-500/70
+                          scrollbar-thin
+                          scrollbar-track-black/10
+                          scrollbar-thumb-amber-500/50"
+            >
               <div className="bg-white/10 px-7 pb-7 pt-5">
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <AnimatePresence>
@@ -165,6 +178,42 @@ const SignUp = () => {
                       </motion.div>
                     )}
                   </AnimatePresence>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-gray-200 ml-1">
+                      Name
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center">
+                        <svg
+                          className="h-5 w-5 text-amber-300"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                      </div>
+                      <input
+                        type="text"
+                        name="name"
+                        required
+                        className="w-full pl-11 pr-4 py-3.5 bg-white/10 border border-white/20 rounded-xl 
+                                 text-white placeholder-gray-400 
+                                 focus:bg-white/20 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20
+                                 transition-all duration-200"
+                        placeholder="Your name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        disabled={loading}
+                      />
+                    </div>
+                  </div>
 
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-200 ml-1">
