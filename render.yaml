@@ -3,9 +3,11 @@ services:
     name: pos-cantina-api
     env: node
     rootDir: pos-backend
-    buildCommand: cd pos-backend && npm install
-    startCommand: cd pos-backend && npm start
+    buildCommand: cd pos-backend && yarn install
+    startCommand: cd pos-backend && yarn start
     envVars:
+      - key: PORT
+        value: 5000
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
