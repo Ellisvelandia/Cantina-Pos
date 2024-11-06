@@ -2,8 +2,9 @@ services:
   - type: web
     name: cantina-pos-backend
     env: node
-    buildCommand: cd pos-backend && yarn install
-    startCommand: cd pos-backend && yarn start
+    rootDir: pos-backend
+    buildCommand: yarn install
+    startCommand: yarn start
     envVars:
       - key: MONGODB_URI
         sync: false
