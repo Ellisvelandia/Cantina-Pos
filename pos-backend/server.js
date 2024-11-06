@@ -14,7 +14,10 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173", // Your Vite frontend URL
+    origin: [
+      "http://localhost:5173", // Local development
+      "https://cantina-pos.onrender.com", // Add your Render frontend URL here
+    ],
     credentials: true,
   })
 );
