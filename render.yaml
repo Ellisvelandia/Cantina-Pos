@@ -3,8 +3,8 @@ services:
     name: cantina-pos-backend
     env: node
     rootDir: pos-backend
-    buildCommand: yarn install
-    startCommand: node server.js
+    buildCommand: yarn
+    startCommand: node server.j
     envVars:
       - key: MONGODB_URI
         sync: false
