@@ -4,7 +4,7 @@ services:
     env: node
     rootDir: pos-backend
     buildCommand: yarn
-    startCommand: node server.j
+    startCommand: node server.js
     envVars:
       - key: MONGODB_URI
         sync: false
