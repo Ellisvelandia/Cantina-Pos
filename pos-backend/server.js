@@ -15,10 +15,14 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173", // Local development
-      "https://cantina-pos.onrender.com", // Add your Render frontend URL here
+      "http://localhost:5173",
+      "https://cantina-pos.onrender.com",
+      "https://pos-cantina.vercel.app",
+      "https://cantina-pos.vercel.app",
     ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.json());
