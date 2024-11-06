@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: pos-cantina-api
+    env: node
+    rootDir: pos-backend
+    buildCommand: cd pos-backend && npm install
+    startCommand: cd pos-backend && npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: SENDGRID_FROM_EMAIL
+        sync: false
