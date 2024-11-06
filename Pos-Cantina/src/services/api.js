@@ -1,10 +1,17 @@
 import axios from "axios";
 
+const baseURL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? "https://cantina-pos-backend.onrender.com/api"
+    : "http://localhost:5000/api");
+
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // Add a request interceptor
